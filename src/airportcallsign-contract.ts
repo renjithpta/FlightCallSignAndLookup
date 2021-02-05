@@ -1,23 +1,225 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
+ * @Description : Chaincode to lookup and match callsign and duration.
+ * @Created : IBS software Pvt Ltd.
+ * @Date 05/02/2021.
+ * 
  */
-
 import { Context, Contract, Info, Returns, Transaction } from 'fabric-contract-api';
-import { Airportcallsign } from './airportcallsign';
 import { FlightCallsign} from './models/flightcallsign' ;
 import { AiportOperators } from './models/airportoperators' ;
 import { AirportLocations } from './models/airportlocations' ;
 import { FlightDurations } from './models/flightdurations' ;
 import { HelperUtill} from  './airportCallSignHelper' ;
 import { UserDetails } from './models/userdetails';
-import  { Iterators} from  'fabric-shim'
-import { exception } from 'console';
+import { Iterators} from  'fabric-shim' ;
+
 
 @Info({title: 'AirportcallsignContract', description: 'My Smart Contract' })
 export class AirportcallsignContract extends Contract {
  
-    async getAllResults(iterator : Iterators.StateQueryIterator): Promise<any[]>  
-    {
+       
+      /*
+      *@Description Initalization call function
+      *@returns boolean  
+      * */
+       
+     @Transaction(false)
+     @Returns('boolean')
+     public async initCallSignLedger(ctx: Context) : Promise<boolean> { 
+      
+        console.log("===================Init the Ledger=======================") ;
+        return true;
+
+      }
+
+
+
+      /*
+      *@ Description get the flightnumber form callsign 
+      *@param string :callSign  : Flight callsign
+      *@param string :scheduleDate    : Flight scheule date in DDMMYYYY fromat
+      *@params string  :arrivalOrDept : arrrivalor or repature indicator (A or D)
+      *@returns string  :Flight code and FlightNumber 
+      * */
+      @Transaction(false)
+      @Returns('string')
+      public async flightFromCallSign(ctx: Context, callSign : string , scheduleDate : string , arrivalOrDept : string) : Promise<string>{
+
+        console.log('==== start ==== flightFromCallSign' , callSign ,  scheduleDate , arrivalOrDept);
+        if(scheduleDate.length != 8) {
+            throw new Error( "Invalid date format input" );
+        }
+        let selector = HelperUtill.createFlightFromcallSign(callSign, scheduleDate  , arrivalOrDept ) ;
+        console.log(" Selector" ,selector ) ;
+        let resultsIterator = await ctx.stub.getQueryResult(selector);
+        let results : any[] = await this.getAllResults(resultsIterator);
+
+        if(results.length > 0) {
+
+            return results[0].scheduleOperatorCode + results[0].scheduleFlightNumber ;
+
+        }else {
+          
+           return callSign ;
+        }
+      }
+
+      /*
+      *@Description get the duration form airport iatacode 
+      *@param string :iatacode  
+      *@returns string  :Numeric durtaion as string value
+      * */
+          
+      @Transaction(false)
+      @Returns('string')
+      public async getAirportDuartionByIATACode(ctx: Context, iataCode : string) : Promise<string>{
+
+        console.info('=======Start======= getAirportDurationByIataCode =======:\n' );
+        let selector = HelperUtill.createDurationSelectorIATAAirportCode(iataCode) ;
+        console.log(" Selector" ,selector ) ;
+        let resultsIterator = await ctx.stub.getQueryResult(selector);
+        let results : any[] = await this.getAllResults(resultsIterator);
+        if(results.length > 0)
+        return results[0].duration;
+         else 
+         return "";
+      }
+
+      /*
+      *@Description Get the duration by ICAOcode 
+      *@param string :icaoCode  
+      *@returns string  :Numeric durtaion as string value
+      * */
+      @Transaction(false)
+      @Returns('string')
+      public async getAirportDuartionByICAOCode(ctx: Context, icaoCode : string) : Promise<string>{
+
+        console.info('=======Start======= getAirportDuartionByICAOCode =======:\n' );
+        let selector = HelperUtill.createDurationSelectorICAIAirportCode(icaoCode) ;
+        console.log(" Selector" ,selector ) ;
+        let resultsIterator = await ctx.stub.getQueryResult(selector);
+        let results : any[] = await this.getAllResults(resultsIterator);
+        if(results.length > 0)
+        return results[0].duration;
+         else 
+         return "";
+      }
+
+      /*
+      *@ Description get the flight duration for the flight
+      *@param string :scheduledFlight  : Flight Number
+      *@param string :scheduleDate    : Flight scheule date in DDMMYYYY fromat
+      *@params string  :iataAirportCode : Depature airport iata airportcode
+      *@returns string  : Duration in HHMM format
+      * */
+
+      @Transaction(false)
+      @Returns('string')
+      public async getDurationFromFlight(ctx: Context, scheduledFlight : string, scheduledDate: string , iataAirportCode: string) : Promise<string>{
+
+
+        console.info('=======Start======= getDurationFromFlight =======:\n' );
+         if(scheduledDate.length !== 8) throw new Error("Invalid date format");
+        let day =  HelperUtill.getDayFromDateString(scheduledDate);
+        let selector = HelperUtill.cretaeDurationFromFlightSelector(scheduledFlight, day,iataAirportCode ) ;
+        console.log(" Selector" ,selector ) ;
+        let resultsIterator = await ctx.stub.getQueryResult(selector);
+        let results : any[] = await this.getAllResults(resultsIterator);
+
+        if(results.length > 0){
+          
+            let duration  = results[0].duration;
+            return HelperUtill.formtDuration(duration);
+
+        }else {
+         return "0000";
+        }
+      }
+
+
+      /*
+      *@ Description get the flight origin date and time in HHMMDDMMYYYY format.
+      *@param string :scheduledFlight  : Flight Number
+      *@param string :scheduleDate    : Flight scheule date in HHMMDDMMYYYY fromat
+      *@params string  :iataAirportCode : Depature airport iata airportcode
+      *@returns string  : Duration in HHMMDDMMYYYY format
+      * */
+
+      @Transaction(false)
+      @Returns('string')
+      public async getOrginScheduleFromFlight(ctx: Context, scheduledFlight : string, scheduledDateTime: string , iataAirportCode: string) : Promise<string>{
+
+
+        console.info('=======Start======= getOrginScheduleFromFlight =======:\n' );
+         if(scheduledDateTime.length !== 12) throw new Error("Invalid date format");
+        let day =  HelperUtill.getDayFromHourMinuteDateString(scheduledDateTime);
+        let selector = HelperUtill.cretaeDurationFromFlightSelector(scheduledFlight, day,iataAirportCode ) ;
+        console.log(" Selector" ,selector ) ;
+        let resultsIterator = await ctx.stub.getQueryResult(selector);
+        let results : any[] = await this.getAllResults(resultsIterator);
+        let duration = "";
+        if(results.length > 0){
+
+         duration =  results[0].duration;
+
+        }else {
+            
+         duration = await this.getAirportDuartionByIATACode(ctx, iataAirportCode);
+        
+
+        }
+        if(duration.trim().length > 0)
+        return HelperUtill.calculateDurationFromSchduleTime(scheduledDateTime, duration);
+         else
+        return scheduledDateTime;
+         
+      }
+
+
+
+     /*
+      *@Description Get the iatacode from ICAO code
+      *@param string :IATACode 
+      *@returns string  : ICAO code
+      * */
+      @Transaction(false)
+      @Returns('string')
+      public async getICAOCode(ctx: Context, iataCode : string) : Promise<string>{
+
+
+        console.info('=======Start======= getICAOCode =======:\n' );
+        let selector = HelperUtill.createICAOCodeSelector(iataCode) ;
+        console.log(" Selector" ,selector ) ;
+        let resultsIterator = await ctx.stub.getQueryResult(selector);
+        let results : any[] = await this.getAllResults(resultsIterator);
+        if(results.length > 0)
+         return results[0].icaoCode;
+         else 
+        return "";
+      }
+
+    /*
+    *@ Description  Check recod exits by key
+    *@param string  Ledger key
+    *@param boolean A boolean return value.
+    * */
+
+    @Transaction(false)
+    @Returns('boolean')
+    public async isExits(ctx: Context, key: string): Promise<boolean> {
+        const buffer = await ctx.stub.getState(key);
+        return (!!buffer && buffer.length > 0);
+    }
+
+
+
+   /*
+      *@Description get iterated result of the argument passed
+      *@param StateQueryIterator :Query iterator
+      *@returns any[]  :array result
+    * */
+    async getAllResults(iterator : Iterators.StateQueryIterator): Promise<any[]>   {
         let allResults: any = [];
         while (true) {
           let res = await iterator.next();
@@ -45,14 +247,22 @@ export class AirportcallsignContract extends Contract {
           }
         }
       } 
+         
 
+      /*
+      *@ Description get the callsign for a Flight 
+      *@param string :scheduleFlight  : Flight iatacode/icao code with flightnumber
+      *@param string :scheduleDate    : Flight scheule date in DDMMYYYY fromat
+      *@params string  :arrivalOrDept : arrrivalor or repature indicator (A or D)
+      *@returns string  :callSignOperatorCode and FlightNumber 
+      * */
       @Transaction(false)
       @Returns('string')
       public async callSignFromFlight(ctx: Context, scheduleFlight : string , scheduleDate : string , arrivalOrDept : string) : Promise<string>{
 
         console.log('==== start ==== callSignFromFlight' , scheduleFlight ,  scheduleDate , arrivalOrDept);
         if(scheduleDate.length != 8) {
-            throw new exception( "Invalid date format input" );
+            throw new Error( "Invalid date format input" );
         }
         let selector = HelperUtill.createcallSignSlecetor(scheduleFlight, scheduleDate  , arrivalOrDept ) ;
         console.log(" Selector" ,selector ) ;
@@ -82,146 +292,6 @@ export class AirportcallsignContract extends Contract {
 
         }
       }
-
-
-      @Transaction(false)
-      @Returns('string')
-      public async flightFromCallSign(ctx: Context, callSign : string , scheduleDate : string , arrivalOrDept : string) : Promise<string>{
-
-        console.log('==== start ==== flightFromCallSign' , callSign ,  scheduleDate , arrivalOrDept);
-        if(scheduleDate.length != 8) {
-            throw new exception( "Invalid date format input" );
-        }
-        let selector = HelperUtill.createFlightFromcallSign(callSign, scheduleDate  , arrivalOrDept ) ;
-        console.log(" Selector" ,selector ) ;
-        let resultsIterator = await ctx.stub.getQueryResult(selector);
-        let results : any[] = await this.getAllResults(resultsIterator);
-
-        if(results.length > 0) {
-
-            return results[0].scheduleOperatorCode + results[0].scheduleFlightNumber ;
-
-        }else {
-          
-           return callSign ;
-        }
-      }
-          
-      @Transaction(false)
-      @Returns('string')
-      public async getAirportDuartionByIATACode(ctx: Context, iataCode : string) : Promise<string>{
-
-
-        console.info('=======Start======= getAirportDurationByIataCode =======:\n' );
-        let selector = HelperUtill.createDurationSelectorIATAAirportCode(iataCode) ;
-        console.log(" Selector" ,selector ) ;
-        let resultsIterator = await ctx.stub.getQueryResult(selector);
-        let results : any[] = await this.getAllResults(resultsIterator);
-        if(results.length > 0)
-        return results[0].duration;
-         else 
-         return "";
-      }
-
-      @Transaction(false)
-      @Returns('string')
-      public async getAirportDuartionByICAOCode(ctx: Context, icaoCode : string) : Promise<string>{
-
-        console.info('=======Start======= getAirportDuartionByICAOCode =======:\n' );
-        let selector = HelperUtill.createDurationSelectorICAIAirportCode(icaoCode) ;
-        console.log(" Selector" ,selector ) ;
-        let resultsIterator = await ctx.stub.getQueryResult(selector);
-        let results : any[] = await this.getAllResults(resultsIterator);
-        if(results.length > 0)
-        return results[0].duration;
-         else 
-         return "";
-      }
-
-      @Transaction(false)
-      @Returns('string')
-      public async getDurationFromFlight(ctx: Context, scheduledFlight : string, scheduledDate: string , iataAirportCode: string) : Promise<string>{
-
-
-        console.info('=======Start======= getDurationFromFlight =======:\n' );
-         if(scheduledDate.length !== 8) throw new exception("Invalid date format");
-        let day =  HelperUtill.getDayFromDateString(scheduledDate);
-        let selector = HelperUtill.cretaeDurationFromFlightSelector(scheduledFlight, day,iataAirportCode ) ;
-        console.log(" Selector" ,selector ) ;
-        let resultsIterator = await ctx.stub.getQueryResult(selector);
-        let results : any[] = await this.getAllResults(resultsIterator);
-
-        if(results.length > 0){
-          
-            let duration  = results[0].duration;
-            return HelperUtill.formtDuration(duration);
-
-        }else {
-         return "0000";
-        }
-      }
-
-      @Transaction(false)
-      @Returns('string')
-      public async getOrginScheduleFromFlight(ctx: Context, scheduledFlight : string, scheduledDate: string , iataAirportCode: string) : Promise<string>{
-
-
-        console.info('=======Start======= getOrginScheduleFromFlight =======:\n' );
-         if(scheduledDate.length !== 12) throw new exception("Invalid date format");
-        let day =  HelperUtill.getDayFromHourMinuteDateString(scheduledDate);
-        let selector = HelperUtill.cretaeDurationFromFlightSelector(scheduledFlight, day,iataAirportCode ) ;
-        console.log(" Selector" ,selector ) ;
-        let resultsIterator = await ctx.stub.getQueryResult(selector);
-        let results : any[] = await this.getAllResults(resultsIterator);
-        let duration = "";
-        if(results.length > 0){
-
-         duration =  results[0].duration;
-
-        }else {
-            
-         duration = await this.getAirportDuartionByIATACode(ctx, iataAirportCode);
-        
-
-        }
-        if(duration.trim().length > 0)
-        return HelperUtill.calculateDurationFromSchduleTime(scheduledDate, duration);
-         else
-        return scheduledDate;
-         
-      }
-
-
-
-
-
-
-
-
-      @Transaction(false)
-      @Returns('string')
-      public async getICAOCode(ctx: Context, iataCode : string) : Promise<string>{
-
-
-        console.info('=======Start======= getICAOCode =======:\n' );
-        let selector = HelperUtill.createICAOCodeSelector(iataCode) ;
-        console.log(" Selector" ,selector ) ;
-        let resultsIterator = await ctx.stub.getQueryResult(selector);
-        let results : any[] = await this.getAllResults(resultsIterator);
-        if(results.length > 0)
-         return results[0].icaoCode;
-         else 
-        return "";
-      }
-
-
-
-    @Transaction(false)
-    @Returns('boolean')
-    public async isExits(ctx: Context, key: string): Promise<boolean> {
-        const buffer = await ctx.stub.getState(key);
-        return (!!buffer && buffer.length > 0);
-    }
 
     
     @Transaction()
@@ -335,7 +405,6 @@ export class AirportcallsignContract extends Contract {
 
 
 
-
     
 
     @Transaction(false)
@@ -388,7 +457,7 @@ export class AirportcallsignContract extends Contract {
         return flightDurations;
     }
 
-
+    
     @Transaction(false)
     @Returns('AiportOperators')
     public async readAiportOperators(ctx: Context, aiportOperatorsKey: string): Promise<AiportOperators> {
@@ -401,6 +470,15 @@ export class AirportcallsignContract extends Contract {
        return aiportOperators;
     }
 
+
+
+
+
+
+ // =========================================================================================
+  // deleteData  dletethe ledger entry in statedb by the key
+  // @param key 
+  // =========================================================================================
     @Transaction()
     public async deleteData(ctx: Context, key: string): Promise<void> {
         const exists = await this.isExits(ctx, key);
@@ -413,60 +491,44 @@ export class AirportcallsignContract extends Contract {
 
 
 
-    @Transaction(false)
-    @Returns('boolean')
-    public async airportcallsignExists(ctx: Context, airportcallsignId: string): Promise<boolean> {
-        const buffer = await ctx.stub.getState(airportcallsignId);
-        return (!!buffer && buffer.length > 0);
-    }
 
-    @Transaction()
-    public async createAirportcallsign(ctx: Context, airportcallsignId: string, value: string): Promise<void> {
-        const exists = await this.airportcallsignExists(ctx, airportcallsignId);
-        if (exists) {
-            throw new Error(`The airportcallsign ${airportcallsignId} already exists`);
-        }
-        const airportcallsign = new Airportcallsign();
-        airportcallsign.value = value;
-        const buffer = Buffer.from(JSON.stringify(airportcallsign));
-        await ctx.stub.putState(airportcallsignId, buffer);
-    }
+    
+       
 
 
+ // =========================================================================================
+  // getQueryResultForQueryString executes the passed in query string.
+  // Result set is built and returned as a byte array containing the JSON results.
+  // =========================================================================================
+  @Transaction(false)
+  @Returns('any')
+  async getQueryResultForQueryString(ctx: Context, queryString : string) : Promise<any>{
+
+    console.log (`================ START =====getQueryResultForQueryString===${queryString}`) ;
+    let resultsIterator = await ctx.stub.getQueryResult(queryString);
+    let results : any[] = await HelperUtill.iterateAllResults(resultsIterator, false);
+    console.log ("================ END =====getQueryResultForQueryString===") ;
+    return Buffer.from(JSON.stringify(results));
+  }
+   
+
+
+ // =========================================================================================
+  // getHistoryByKey  get the the trasctional history by key .
+  // Result set is built and returned as a byte array containing the JSON results.
+  // =========================================================================================
+  @Transaction(false)
+  @Returns('any')
+  async getHistoryByKey(ctx: Context, key: string) : Promise<any> {
+
+    let resultsIterator = await ctx.stub.getHistoryForKey(key);
+    
+    let results : any[] = await HelperUtill.iterateAllResults(resultsIterator, false);
+
+    return Buffer.from(JSON.stringify(results));
+  }
 
     
 
-    @Transaction(false)
-    @Returns('Airportcallsign')
-    public async readAirportcallsign(ctx: Context, airportcallsignId: string): Promise<Airportcallsign> {
-        const exists = await this.airportcallsignExists(ctx, airportcallsignId);
-        if (!exists) {
-            throw new Error(`The airportcallsign ${airportcallsignId} does not exist`);
-        }
-        const buffer = await ctx.stub.getState(airportcallsignId);
-        const airportcallsign = JSON.parse(buffer.toString()) as Airportcallsign;
-        return airportcallsign;
-    }
-
-    @Transaction()
-    public async updateAirportcallsign(ctx: Context, airportcallsignId: string, newValue: string): Promise<void> {
-        const exists = await this.airportcallsignExists(ctx, airportcallsignId);
-        if (!exists) {
-            throw new Error(`The airportcallsign ${airportcallsignId} does not exist`);
-        }
-        const airportcallsign = new Airportcallsign();
-        airportcallsign.value = newValue;
-        const buffer = Buffer.from(JSON.stringify(airportcallsign));
-        await ctx.stub.putState(airportcallsignId, buffer);
-    }
-
-    @Transaction()
-    public async deleteAirportcallsign(ctx: Context, airportcallsignId: string): Promise<void> {
-        const exists = await this.airportcallsignExists(ctx, airportcallsignId);
-        if (!exists) {
-            throw new Error(`The airportcallsign ${airportcallsignId} does not exist`);
-        }
-        await ctx.stub.deleteState(airportcallsignId);
-    }
 
 }

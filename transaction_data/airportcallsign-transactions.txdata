@@ -1,0 +1,44 @@
+[
+    {
+        "transactionName": "airportcallsignExists",
+        "transactionLabel": "A test airportcallsignExists transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "createAirportcallsign",
+        "transactionLabel": "A test createAirportcallsign transaction",
+        "arguments": [
+            "001",
+            "some value"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "readAirportcallsign",
+        "transactionLabel": "A test readAirportcallsign transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "updateAirportcallsign",
+        "transactionLabel": "A test updateAirportcallsign transaction",
+        "arguments": [
+            "001",
+            "some other value"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "deleteAirportcallsign",
+        "transactionLabel": "A test deleteAirportcallsign transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    }
+]

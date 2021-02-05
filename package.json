@@ -1,6 +1,6 @@
 {
   "name": "airportcallsign",
-  "version": "0.2.4",
+  "version": "0.2.7",
   "description": "Airport callsign and lookup matching ",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "prepublishOnly": "npm run build"
   },
   "engineStrict": true,
-  "author": "John Doe",
+  "author": "Renjith",
   "license": "Apache-2.0",
   "dependencies": {
     "fabric-contract-api": "^1.4.5",
