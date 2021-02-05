@@ -1,0 +1,1 @@
+{"index":{"fields":["docType","scheduleOperatorCode", "departureAirportIATACode","callsignOperatorCode" ,"callsignFlightNumber","arrivalOrDepature"]},"ddoc":"indexFlightDurationDoc", "name":"indexFlightDuration","type":"json"}

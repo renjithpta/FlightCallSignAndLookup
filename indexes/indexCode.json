@@ -1,0 +1,1 @@
+{"index":{"fields":["icaoCode","iataCode"]},"ddoc":"indexCodeDoc", "name":"indexCode","type":"json"}

@@ -1,0 +1,1 @@
+{"index":{"fields":["docType","scheduleOperatorCode", "scheduleFlightNumber","arrivalOrDepature" ,"daysOfOperation"]},"ddoc":"indexFlightDurationDoc", "name":"indexFlightDuration","type":"json"}
