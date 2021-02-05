@@ -1,0 +1,7 @@
+{
+    "wallet":"/gateway/local/gen_local_wallet_org1",
+    "connection_profile_filename":"/gateway/TestOrg1Connection.json",
+    "channel_name":"mychannel",
+    "smart_contract_name":"airportcallsign",
+    "peerForEventsSubscription": "peer0.org1.example.com"
+}
