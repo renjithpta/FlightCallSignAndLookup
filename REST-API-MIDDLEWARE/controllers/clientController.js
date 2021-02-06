@@ -1,3 +1,10 @@
+
+
+/****
+ *@Description : Controller to handle all the  API request and invoke chaincode function.
+ *@author Renjith .
+ *@license Apache 2.0 
+ */
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const colors = require("colors") ;
@@ -5,7 +12,12 @@ const networkConnection = require('../utils/networkConnection');
 const userService = require("../services/UserServices") ;
 
 
-
+/*
+* API - @POST /v1/api/lookupandduration/authenticate . Consume and Produce JSON payload
+* @Description  : Handles authentication and generate JWT token if success
+* @Params { usrename : string , password : ppassowrd } : JSON payload
+* @response  { accessToken : string  , success : boolean} : JSON payload
+*/
 exports.login = async (req, res) => {
    
 
@@ -33,6 +45,12 @@ exports.login = async (req, res) => {
 };
 
 
+/*
+* API - @POST /v1/api/lookupandduration/callsignfromflight . Consume and Produce JSON payload
+* @Description  : Handles lookupcall to find the callsign from the flight details such scheduledFlightNo , date and A/D indicator.
+* @Params { scheduleFlight : string, scheduleddate : string , arrivalOrDept : string } : JSON payload
+* @response  { callsign : string } : JSON payload
+*/
 exports.callSignFromFlight = async (req, res) => {
     console.log(`======start ====callSignFromFlight========PARAMS======= ${req.body.toString()}================`.yellow.bold)
     const { scheduleFlight, scheduleDate, arrivalOrDept } = req.body;
@@ -61,7 +79,12 @@ exports.callSignFromFlight = async (req, res) => {
 
 
 
-
+/*
+* API - @POST /api/flightfromcallsign/callsignfromflight . Consume and Produce JSON payload
+* @Description  : Handles lookupcall to find the flight  from the callsign with details such callsignno , flight scheduleddate and A/D indicator.
+* @Params { scheduleFlight : string, scheduleDate : string , arrivalOrDept : string } : JSON payload
+* @response  { callsign : string } : JSON payload
+*/
 exports.flightFromCallSign = async (req, res) => {
 
 
@@ -89,7 +112,12 @@ exports.flightFromCallSign = async (req, res) => {
 };
 
 
-
+/*
+* API - @GET /v1/api/lookupandduration/durationbyiatacode/:code . Consume path param as string and Produce JSON payload
+* @Description  : Handles the getAirportDuartionByIATACode chaincode function call with  airport IATA code  as paramaeter
+* @Params { iataCode : string } : Test path param payload
+* @response  { duration : string } : JSON payload
+*/
 exports.airportDuartionByIATACode = async (req, res) => {
 
 
@@ -116,8 +144,12 @@ exports.airportDuartionByIATACode = async (req, res) => {
 
 
 
-
-
+/*
+* API - @GET /v1/api/lookupandduration/durationbyicaocode/:code . Consume path param as string and Produce JSON payload
+* @Description  : Handles the getAirportDuartionByICAOCode chaincode function call with  airport ICAOCode as paramaeter
+* @Params { icaoCode : string } : Test path param payload
+* @response  { duration : string } : JSON payload
+*/
 exports.airportDuartionByICAOCode = async (req, res) => {
 
     console.log(`======START ====airportDuartionByICAOCode========PARAMS======= ${req.params.code}================`.yellow.bold)
@@ -139,8 +171,12 @@ exports.airportDuartionByICAOCode = async (req, res) => {
         });
 };
 
-
-
+/*
+* API - @POST /v1/api/lookupandduration/flightduration . Consume and Produce JSON payload
+* @Description  : Handles the getDurationFromFlight chaincode function call with  details such scheduledFlight, scheduledDate, iataAirportCode.
+* @Params { scheduleFlight : string, scheduleddate : string , arrivalOrDept : string } : JSON payload
+* @response  { duration : string } : JSON payload
+*/
 exports.durationFromFlight = async (req, res) => {
     console.log(`======start ====durationFromFlight========PARAMS======= ${req.body.toString()}================`.yellow.bold)
     const { scheduledFlight, scheduledDate, iataAirportCode } = req.body;
@@ -163,13 +199,16 @@ exports.durationFromFlight = async (req, res) => {
         });
 };
 
-
-
-
+/*
+* API - @POST /v1/api/lookupandduration/orginscheduledatetime . Consume and Produce JSON payload
+* @Description  : Handles the getOrginScheduleFromFlight  chaincode function call with details such scheduledFlight, scheduledDate, iataAirportCode.
+* @Params { scheduleFlight : string, scheduleddate : string , arrivalOrDept : string } : JSON payload
+* @response  { orginDatetime : string } : JSON payload
+*/
 exports.orginScheduleFromFlight = async (req, res) => {
 
 
-    console.log(`======start ====orginScheduleFromFlight========PARAMS======= ${req.body.scheduledFlight}================`.yellow.bold)
+    console.log(`======start ====orginScheduleFromFlight========PARAMS======= ${req.body.tostring()}================`.yellow.bold)
     const { scheduledFlight, scheduledDate, iataAirportCode } = req.body;
    
    

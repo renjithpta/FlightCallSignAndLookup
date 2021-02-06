@@ -6,15 +6,15 @@ exports.swaggerDocs = function() {
     "swagger": "2.0",
     "info": {
         "version": "1.0.0",
-        "title": "REST API to access Callsign and Duration look .",
-        "description": "This is the API defintion to access the callsign and duration lookup chaincode running on HLF. The user access is restricted with JWT token",
+        "title": "REST API to access callsign and duration  lookup  chaincode .",
+        "description": "This is the REST API  to access the callsign and duration lookup chaincode running on the HLF. The user access is restricted with JWT token.",
         "license": {
             "name": "MIT",
             "url": "https://opensource.org/licenses/MIT"
         }
     },
     "host": "localhost:5000",
-    "basePath": "/api/callsignandlookup",
+    "basePath": "/v1/api/lookupandduration",
     "tags": [
         {
             "name": "Chaincode API",

@@ -1,3 +1,10 @@
+
+/****
+ *@Description : JWT verifier middleware
+ *@author Renjith .
+ *@license Apache 2.0 
+ *
+ */
 const jwt = require('jsonwebtoken');
 
 exports.checkLogin = (req, res, next) => {

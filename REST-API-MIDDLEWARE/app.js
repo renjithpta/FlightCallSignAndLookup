@@ -1,3 +1,8 @@
+/****
+ *@Description : The main function which contain all the middleware, routing configurations and error
+ *@author Renjith .
+ *@license Apache 2.0 
+ */
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname,  '.env') });
 const swaggerUi    = require("swagger-ui-express");
@@ -9,6 +14,14 @@ const clientRouter = require('./routes/client');
 const morgan       = require('morgan') ;
 const rateLimit    = require("express-rate-limit");
  
+
+let options = {
+    explorer: true,
+    customSiteTitle: "IBS lookup and duration -Chaincode API",
+    customCss: `
+  .topbar-wrapper img {content:url(https://www.ibsplc.com/); width:50px; height:auto;}
+  .swagger-ui .topbar { background-color: #c80680; background: -webkit-linear-gradient(left, #c80680 0%, #731472 41%); background: -moz-linear-gradient(left, #c80680 0%, #731472 41%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$left', endColorstr='$right',GradientType=0 ); background: linear-gradient(to right, #c80680 0%, #731472 41%); border-bottom: 20px solid #5dc6d1;background: -moz-linear-gradient(left, #c80680 0%, #731472 41%); }`,
+  };
 const app = express();
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -27,11 +40,11 @@ app.use(function (req, res, next) {
 });
 
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(someObject.swaggerDocs()));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(someObject.swaggerDocs(), options));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/api/callsignandlookup', clientRouter);
+app.use('/v1/api/lookupandduration', clientRouter);
 
 
 // catch 404 and forward to error handler
