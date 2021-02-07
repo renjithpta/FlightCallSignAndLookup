@@ -1,0 +1,12 @@
+{
+    "channel_name": "lookupdurationchannel",
+    "smart_contract_name": "airportcallsign",
+    "connection_file": "connection_profile.json",
+    "appAdmin": "admin",
+    "appAdminSecret": "adminpw",
+    "orgMSPID": "IBSMSP",
+    "caName": "IBSCA",
+    "peerName": "IBSPeer1",
+    "gatewayDiscovery": { "enabled": true, "asLocalhost": true }
+   
+ }
