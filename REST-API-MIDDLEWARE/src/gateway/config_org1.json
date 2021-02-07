@@ -1,9 +1,0 @@
-{
-    "wallet":"/gateway/local/gen_local_wallet_org1",
-    "connection_profile_filename_local":"/gateway/TestOrg1Connection.json",
-    "connection_profile_filename_docker":"/gateway/docker-connection-profile.json",
-
-    "channel_name":"mychannel",
-    "smart_contract_name":"airportcallsign",
-    "peerForEventsSubscription": "peer0.org1.example.com"
-}
