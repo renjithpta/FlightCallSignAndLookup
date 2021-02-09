@@ -17,10 +17,9 @@ const rateLimit    = require("express-rate-limit");
 
 let options = {
     explorer: true,
-    customSiteTitle: "IBS lookup and duration -Chaincode API",
+    customSiteTitle: "IBS Software Pvt. Ltd. -Chaincode API",
     customCss: `
-  .topbar-wrapper img {content:url(https://www.ibsplc.com/); width:50px; height:auto;}
-  .swagger-ui .topbar { background-color: #c80680; background: -webkit-linear-gradient(left, #c80680 0%, #731472 41%); background: -moz-linear-gradient(left, #c80680 0%, #731472 41%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$left', endColorstr='$right',GradientType=0 ); background: linear-gradient(to right, #c80680 0%, #731472 41%); border-bottom: 20px solid #5dc6d1;background: -moz-linear-gradient(left, #c80680 0%, #731472 41%); }`,
+    .swagger-ui .topbar { background-color: #c80680; background: -webkit-linear-gradient(left, #c80680 0%, #731472 41%); background: -moz-linear-gradient(left, #c80680 0%, #731472 41%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$left', endColorstr='$right',GradientType=0 ); background: linear-gradient(to right, #c80680 0%, #731472 41%); border-bottom: 20px solid #5dc6d1;background: -moz-linear-gradient(left, #c80680 0%, #731472 41%); }`,
   };
 const app = express();
 const limiter = rateLimit({

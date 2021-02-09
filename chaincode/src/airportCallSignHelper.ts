@@ -186,8 +186,9 @@ export class HelperUtill {
 
    public static cretaeDurationFromFlightSelector(scheduledFlight: string, scheduleDay: number, iataAirport: string): string {
 
-      let operationDays = ["1000000", "0100000", "0010000", "0001000", "0000100", "0000010", "0000001"];
-      let day = operationDays[scheduleDay];
+  
+      let dayExpression = ["......1","1......", ".1.....", "..1....", "...1...", "....1..", ".....1."];
+  
       let selector = {
          "selector": {
             "docType": {
@@ -204,11 +205,15 @@ export class HelperUtill {
                      "$eq": "1111111"
                   }
                },
+              
+                
                {
                   "daysOfOperation": {
-                     "$eq": day
+                     "$regex": dayExpression[scheduleDay]
                   }
                }
+
+
             ]
          }
       };

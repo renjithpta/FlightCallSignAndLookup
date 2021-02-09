@@ -3,7 +3,7 @@ const path = require('path');
 const network  = require("./src/fabric/utils.js")
 
 let orgNumber         ='ibs' ;//process.argv[2];
-let userName = 'fly2plan'; //process.argv[3];
+let userName = 'ibs'; //process.argv[3];
 
 if(process.argv[2] && process.argv[2].trim().length > 1)  orgNumber = process.argv[2];
 if(process.argv[3] && process.argv[3].trim().length > 1)  userName  = process.argv[3];
@@ -11,7 +11,7 @@ if(process.argv[3] && process.argv[3].trim().length > 1)  userName  = process.ar
 async function readAirlineCsv() {
 
 const transaction = 'createAiportOperators';
-let csv = fs.readFileSync("./csv/airlines.csv") ;
+let csv = fs.readFileSync("./cvs/airlines.csv") ;
 
 var array = csv.toString().split("\n");
 console.log("======Total======", array.length);
@@ -42,7 +42,7 @@ for(let i = 1 ; i < array.length ; i++) {
 async function readAirportsCsv() {
 
     const transaction = 'createAirportLocations';
-    let csv = fs.readFileSync("./csv/airports.csv") ;
+    let csv = fs.readFileSync("./cvs/airports.csv") ;
     
     var array = csv.toString().split("\n");
    console.log(" ==== Total Records========", array.length)
@@ -78,7 +78,7 @@ async function readAirportsCsv() {
 async function readFlightDurationsCsv() {
 
     const transaction = 'createFlightDuration';
-    let csv = fs.readFileSync("./csv/flight_durations.csv") ;
+    let csv = fs.readFileSync("./cvs/flight_durations.csv") ;
    
     var array = csv.toString().split("\n");
    
@@ -115,7 +115,7 @@ async function readCallSignCsv() {
 
     const transaction = 'createAirportcallSign';
    
-    let csv = fs.readFileSync("./csv/callsigns.csv") ;
+    let csv = fs.readFileSync("./cvs/callsigns.csv") ;
    
     var array = csv.toString().split("\n");
     console.log(" ===========Toal Records ===============", array.length)

@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  restapiservice7:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: restapiservice7
+    container_name: restapiservice7
+    restart: unless-stopped
+    env_file: .env
+  
+    ports:
+      - "5000:5000"
+    
+    networks:
+      - lookupduration
+
+networks:
+  lookupduration:
+    external: true

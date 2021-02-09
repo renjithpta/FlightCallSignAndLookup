@@ -6,9 +6,14 @@ const fs = require('fs');
 
 
 //connect to the config file
+
 const configPathPrefix = path.join(process.cwd(), 'config');
 const walletPathPrefix = path.join(process.cwd(), '_idwallet');
-const configPath = path.join(configPathPrefix, 'config.json');
+let configPath ;
+if(process.env.NODE_ENV && process.env.NODE_ENV ===' DOCKER')
+ configPath = path.join(configPathPrefix, 'config.json');
+ else
+ configPath = path.join(configPathPrefix, 'config-docker.json');
 const configJSON = fs.readFileSync(configPath, 'utf8');
 const config = JSON.parse(configJSON);
 let connection_file = config.connection_file;
