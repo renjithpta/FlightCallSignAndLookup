@@ -7,7 +7,7 @@ import { ChaincodeStub, ClientIdentity } from 'fabric-shim';
 import { AiportOperators } from './models/airportoperators' ;
 import { AirportLocations } from './models/airportlocations' ;
 import { FlightDurations } from './models/flightdurations' ;
-import { HelperUtill} from  './airportCallSignHelper' ;
+import { HelperUtill} from  './chaincodeUtil' ;
 
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';

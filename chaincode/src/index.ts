@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AirportcallsignContract } from './airportcallsign-contract';
-export { AirportcallsignContract } from './airportcallsign-contract';
+import { AirportLookupContract } from './airportlookup-contract';
+export { AirportLookupContract } from './airportlookup-contract';
 
-export const contracts: any[] = [ AirportcallsignContract ];
+export const contracts: any[] = [ AirportLookupContract ];

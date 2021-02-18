@@ -10,13 +10,12 @@ import { FlightCallsign } from './models/flightcallsign';
 import { AiportOperators } from './models/airportoperators';
 import { AirportLocations } from './models/airportlocations';
 import { FlightDurations } from './models/flightdurations';
-import { HelperUtill } from './airportCallSignHelper';
+import { HelperUtill } from './chaincodeUtil';
 import { UserDetails } from './models/userdetails';
 import { Iterators } from 'fabric-shim';
 
-
-@Info({ title: 'AirportcallsignContract', description: 'My Smart Contract' })
-export class AirportcallsignContract extends Contract {
+@Info({ title: 'AirportLookupContract', description: 'Duration lookup reference logic implemenation of AODB' })
+export class AirportLookupContract extends Contract {
 
 
     /*
@@ -307,7 +306,7 @@ export class AirportcallsignContract extends Contract {
     *@returns boolean  
     * */
     @Transaction()
-    public async createAirportcallSign(ctx: Context, scheduleOperatorCode: string, scheduleFlightNumber: string,
+    public async saveAirportcallSign(ctx: Context, scheduleOperatorCode: string, scheduleFlightNumber: string,
         callsignOperatorCode: string, callsignFlightNumber: string, arrivalOrDepature: string,
         validFrom: string, validTo: string): Promise<boolean> {
 
@@ -340,7 +339,7 @@ export class AirportcallsignContract extends Contract {
     *@returns boolean  
     * */
     @Transaction()
-    public async createAiportOperators(ctx: Context, iataCode: string, icaoCode: string): Promise<boolean> {
+    public async saveAiportOperators(ctx: Context, iataCode: string, icaoCode: string): Promise<boolean> {
 
         let key = iataCode + "-" + icaoCode + "-" + "airline";
         /* const exists = await this.isExits(ctx, key);
@@ -368,7 +367,7 @@ export class AirportcallsignContract extends Contract {
     *==========================================================================================
     * */
     @Transaction()
-    public async createAirportLocations(ctx: Context, iataCode: string, icaoCode: string, duration: string): Promise<boolean> {
+    public async saveAirportLocations(ctx: Context, iataCode: string, icaoCode: string, duration: string): Promise<boolean> {
 
         const airportLocations = new AirportLocations();
         let key = iataCode + "-" + icaoCode + "-" + "airport";
@@ -401,7 +400,7 @@ export class AirportcallsignContract extends Contract {
     *=========================================================================================
     * */
     @Transaction()
-    public async createFlightDuration(ctx: Context, scheduleOperatorCode: string, arrivalOrDepature: string,
+    public async saveFlightDuration(ctx: Context, scheduleOperatorCode: string, arrivalOrDepature: string,
         daysOfOperation: string, duration: string, departureAirportIATACode: string): Promise<boolean> {
 
         let key = scheduleOperatorCode + "-" + daysOfOperation + "-" + departureAirportIATACode + "-" + arrivalOrDepature;
@@ -434,6 +433,11 @@ export class AirportcallsignContract extends Contract {
         return airportcallsign;
     }
 
+
+    // =========================================================================================
+    // deleteData  Read AirportLocations ledger entry in statedb by the key
+    // @param string : airportLocationsKey 
+    // =========================================================================================
     @Transaction(false)
     @Returns('AirportLocations')
     public async readAirportLocations(ctx: Context, airportLocationsKey: string): Promise<AirportLocations> {
@@ -446,7 +450,10 @@ export class AirportcallsignContract extends Contract {
         return airportLocations;
     }
 
-
+    // =========================================================================================
+    // deleteData  Read FlightDurations ledger entry in statedb by the key
+    // @param string : flightDurationsKey 
+    // =========================================================================================
     @Transaction(false)
     @Returns('FlightDurations')
     public async readFlightDurations(ctx: Context, flightDurationsKey: string): Promise<FlightDurations> {
@@ -460,6 +467,12 @@ export class AirportcallsignContract extends Contract {
     }
 
 
+    
+
+    // =========================================================================================
+    // deleteData  Read AiportOperators ledger entry in statedb by the key
+    // @param string : aiportOperatorsKey 
+    // =========================================================================================
     @Transaction(false)
     @Returns('AiportOperators')
     public async readAiportOperators(ctx: Context, aiportOperatorsKey: string): Promise<AiportOperators> {

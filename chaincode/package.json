@@ -1,5 +1,5 @@
 {
-  "name": "airportcallsign",
+  "name": "airportlookup",
   "version": "0.3.2",
   "description": "Airport callsign and lookup matching ",
   "main": "dist/index.js",
