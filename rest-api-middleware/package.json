@@ -11,7 +11,9 @@
     "pretest": "npm run lint",
     "test": "nyc mocha --recursive",
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "aodb:import": "export NODE_ENV=development && node dataImportService.js"
+
     
   },
   "engineStrict": true,

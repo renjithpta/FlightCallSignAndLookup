@@ -10,7 +10,7 @@ const fs = require('fs');
 const configPathPrefix = path.join(process.cwd(), 'config');
 const walletPathPrefix = path.join(process.cwd(), '_idwallet');
 let configPath ;
-if(process.env.NODE_ENV && process.env.NODE_ENV ===' DOCKER')
+ if(process.env.NODE_ENV && process.env.NODE_ENV ==='development')
  configPath = path.join(configPathPrefix, 'config.json');
  else
  configPath = path.join(configPathPrefix, 'config-docker.json');

@@ -1,0 +1,15 @@
+{
+    "airlinefilepath": "./cvs/airlines.csv",
+    "airportfilepath": "./cvs/airports.csv",
+    "flightdurationfilepath": "./cvs/flight_durations.csv",
+    "callsignpath": "callsigns",
+    "airlinefunction" : "saveAiportOperators",
+    "airportfunction" : "saveAirportLocations" ,
+    "durationfunction" : "saveFlightDuration" ,
+    "callsignfunction" : "saveAirportcallSign",
+    "username" : "ibs",
+    "orgNumber" : "ibs"
+
+
+    
+ }

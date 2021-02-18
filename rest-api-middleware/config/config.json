@@ -1,6 +1,6 @@
 {
     "channel_name": "lookupdurationchannel",
-    "smart_contract_name": "airportcallsign",
+    "smart_contract_name": "airportlookup",
     "connection_file": "connection_profile.json",
     "appAdmin": "admin",
     "appAdminSecret": "adminpw",

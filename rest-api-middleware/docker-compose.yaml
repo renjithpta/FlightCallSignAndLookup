@@ -1,12 +1,12 @@
 version: '3'
 
 services:
-  restapiservice7:
+  restapiservice8:
     build:
       context: .
       dockerfile: Dockerfile
-    image: restapiservice7
-    container_name: restapiservice7
+    image: restapiservice8
+    container_name: restapiservice8
     restart: unless-stopped
     env_file: .env
   
